@@ -1,8 +1,6 @@
 import asyncio
 import aiohttp
-from aiohttp_socks import ProxyConnector
 import httpx
-from httpx_socks import AsyncProxyTransport
 import sqlite3
 from aiohttp import ClientSession
 import xml.etree.ElementTree as ET
