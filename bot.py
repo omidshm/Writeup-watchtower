@@ -4,11 +4,12 @@ import httpx
 import sqlite3
 from aiohttp import ClientSession
 import xml.etree.ElementTree as ET
+import os
 
 DATABASE = 'medium_posts.db'
-TG_BOT_TOKEN = "7087696862:AAG7KMdStPWHt-5HGkCo8EAcl89k0nzobBo"
-TG_DESTINATION_CHAT_ID = "-1002208544219"
-CHECKING_PERIOD = 10 # in minutes
+TG_BOT_TOKEN = os.getenv('BOT_TOKEN')
+TG_DESTINATION_CHAT_ID = os.getenv('CHAT_ID')
+CHECKING_PERIOD = 60 # in minutes
 
 async def send_message(bot_token: str, msg: str, chat_id: str):
     url = f'https://api.telegram.org/bot{bot_token}/sendMessage'
