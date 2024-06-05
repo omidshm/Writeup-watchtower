@@ -1,6 +1,6 @@
 FROM python:3.11-slim
 
-ADD bot.py .
+ADD . .
 
 RUN pip install --no-cache-dir -r requirements.txt
 
