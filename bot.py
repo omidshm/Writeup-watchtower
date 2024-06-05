@@ -18,6 +18,7 @@ async def send_message(bot_token: str, msg: str, chat_id: str):
     }
     
     async with aiohttp.ClientSession() as session:
+        await asyncio.sleep(2)
         async with session.post(url, data=payload) as response:
             if response.status == 200:
                 print(f"Message sent successfully to chat_id {chat_id}")
