@@ -36,7 +36,7 @@ def init_db():
 
 # Retrieve tags (for example, from a static list or an API)
 def get_tags():
-    return ["ethical-hacking", "bug-bounty", "infosec"]
+    return ["ethical-hacking", "bug-bounty", "infosec", "writeup"]
 
 # Search Medium for posts related to the given tags
 async def search_medium(tag, session:httpx.AsyncClient):
