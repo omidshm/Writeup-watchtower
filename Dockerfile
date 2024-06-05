@@ -4,6 +4,4 @@ ADD . .
 
 RUN pip install --no-cache-dir -r requirements.txt
 
-ENV PATH=$PATH:.
-
 CMD ["python", "bot.py"]
