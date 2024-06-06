@@ -39,9 +39,6 @@ def init_db():
 def get_tags():
     return ["ethical-hacking", "bug-bounty", "infosec", "writeup"]
 
-def get_channel_ids():
-    return ["UCP7WmQ_U4GB3K51Od9QvM0w"]
-
 # Search Medium for posts related to the given tags
 async def search_medium(tag, session:httpx.AsyncClient):
     url = f"https://medium.com/feed/tag/{tag}"
@@ -63,28 +60,6 @@ async def search_medium(tag, session:httpx.AsyncClient):
     
     return posts
 
-async def search_youtube(channel_id, session:httpx.AsyncClient):
-    url = f"https://www.youtube.com/feeds/videos.xml?channel_id={channel_id}"
-    response = await session.get(url)
-    
-    xml_data = response.content
-        
-    # Parse the XML data
-    root = ET.fromstring(xml_data)
-    
-    # Find and process each item in the RSS feed
-    posts = []
-    for entry in root.findall('{http://www.w3.org/2005/Atom}entry'):
-        title = entry.find('{http://www.w3.org/2005/Atom}title').text
-        video_id = entry.find('{http://www.w3.org/2005/Atom}id').text.split(":")[-1]
-        link = f"https://www.youtube.com/v/{video_id}"
-
-
-        # Print the extracted information
-        posts.append({"title": title, "link": link})
-    
-    return posts
-    
 # Save posts to the database
 def save_posts(posts):
     conn = sqlite3.connect(DATABASE)
@@ -113,11 +88,8 @@ async def main():
     while True:
         init_db()
         tags = get_tags()
-        channel_ids = get_channel_ids()
         async with httpx.AsyncClient() as client:
-            youtube_tasks = [search_youtube(channel_id, client) for channel_id in channel_ids]
-            medium_tasks = [search_medium(tag, client) for tag in tags]
-            tasks = youtube_tasks + medium_tasks
+            tasks = [search_medium(tag, client) for tag in tags]
             results = await asyncio.gather(*tasks)
         
         all_posts = [post for result in results for post in result]
