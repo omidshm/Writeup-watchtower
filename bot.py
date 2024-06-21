@@ -11,6 +11,28 @@ TG_BOT_TOKEN = os.getenv('BOT_TOKEN')
 TG_DESTINATION_CHAT_ID = os.getenv('CHAT_ID')
 CHECKING_PERIOD = 60 # in minutes
 
+def load_file_as_list(file_path):
+    """
+    Loads a text file and returns its lines as a list.
+
+    :param file_path: Path to the text file.
+    :return: List of lines in the text file.
+    """
+    try:
+        with open(file_path, 'r') as file:
+            lines = file.readlines()
+        # Strip newline characters from each line
+        lines = [line.strip() for line in lines]
+        return lines
+    except FileNotFoundError:
+        print(f"The file at {file_path} was not found.")
+        return []
+    except IOError:
+        print(f"An error occurred while reading the file at {file_path}.")
+        return []
+      
+
+
 async def send_message(bot_token: str, msg: str, chat_id: str):
     url = f'https://api.telegram.org/bot{bot_token}/sendMessage'
     payload = {
@@ -37,10 +59,22 @@ def init_db():
 
 # Retrieve tags (for example, from a static list or an API)
 def get_tags():
-    return ["ethical-hacking", "bug-bounty", "infosec", "writeup"]
+    return load_file_as_list("tags.txt")
 
 def get_channel_ids():
-    return ["UCP7WmQ_U4GB3K51Od9QvM0w"]
+    channel_id_links = load_file_as_list("youtube_channels.txt")
+    final_channel_ids = []
+
+    for string in channel_id_links:
+        if "/" in string:
+            parts = string.split("/")
+            last_part = parts[-1]
+            final_channel_ids.append(last_part)
+        else:
+            final_channel_ids.append(string)
+
+    return final_channel_ids
+
 
 # Search Medium for posts related to the given tags
 async def search_medium(tag, session:httpx.AsyncClient):
